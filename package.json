@@ -9,11 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/font": "^14.2.15",
+    "@types/next-auth": "^3.13.0",
     "bcryptjs": "^3.0.2",
     "jose": "^6.0.11",
     "mssql": "^11.0.1",
     "next": "^15.3.3",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

@@ -2,30 +2,50 @@ import type { NextConfig } from 'next'
 
 /**
  * Next.js yapılandırma nesnesi
- * 
  * @type {NextConfig}
  */
 const nextConfig: NextConfig = {
-  // Sunucu tarafında kullanılacak external paketler
-  serverExternalPackages: ['jose', 'bcryptjs', 'mssql'],
+  // ===== Temel Ayarlar =====
+  reactStrictMode: true,
+  productionBrowserSourceMaps: false, // Production'da source map
   
-  // Deneysel özellikler
-  experimental: {
-    // Sunucu Aksiyonları (Next.js 14+)
-    serverActions: {
-      enabled: true, // Server Actions'ı aktif et
-    },
-    
-    // TürboPack optimizasyonları
-    turbo: {
-      loaders: {
-        // Özel yükleyici ayarları
-        '.md': ['text-loader'],
-      },
+  // ===== Turbopack Ayarları (Next.js 15+ ile stabil) =====
+  turbopack: {
+    // Loader tanımları (eski experimental.turbo.loaders yerine)
+    rules: {
+      '*.md': ['text-loader'], // Örnek: Markdown dosyaları için
     },
   },
-  
-  // Güvenlik başlıkları
+
+  // ===== Sunucu Paketleri =====
+  serverExternalPackages: [
+    'jose',      // JWT işlemleri için
+    'bcryptjs',  // Şifre hashleme
+    'mssql'      // SQL Server bağlantısı
+  ],
+
+  // ===== Görsel Optimizasyonları =====
+  images: {
+    domains: [
+      'localhost',       // Yerel geliştirme
+      'flashcardapp.com' // Production domain
+    ],
+    formats: ['image/avif', 'image/webp'],
+  },
+
+  // ===== Uluslararasılaştırma (App Router'da farklı yapılandırma gerekir) =====
+  // Not: i18n ayarları app/[lang]/layout.tsx'te yapılmalı
+  // i18n: { locales: ['tr', 'en'], defaultLocale: 'tr' },
+
+  // ===== Derleme Ayarları =====
+  typescript: {
+    ignoreBuildErrors: false, // Production'da false kalmalı
+  },
+  eslint: {
+    ignoreDuringBuilds: false, // Production'da false kalmalı
+  },
+
+  // ===== Güvenlik Başlıkları =====
   async headers() {
     return [
       {
@@ -42,35 +62,25 @@ const nextConfig: NextConfig = {
           {
             key: 'X-XSS-Protection',
             value: '1; mode=block'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin'
           }
         ],
       },
     ]
   },
-  
-  // Uluslararasılaştırma (i18n) ayarları
-  i18n: {
-    locales: ['tr', 'en'],
-    defaultLocale: 'tr',
-  },
-  
-  // Görsel optimizasyonları
-  images: {
-    domains: [
-      'localhost', // Yerel geliştirme
-      'yourdomain.com', // Production domain
-    ],
-  },
-  
-  // TypeScript build hatalarını yönetme
-  typescript: {
-    ignoreBuildErrors: false, // Production'da false olmalı
-  },
-  
-  // ESLint ayarları
-  eslint: {
-    ignoreDuringBuilds: false, // Production'da false olmalı
-  },
+
+  // ===== Webpack Özel Ayarları (Opsiyonel) =====
+  webpack: (config, { isServer }) => {
+    // Özel yapılandırmalar (örneğin SVG yükleyici)
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    })
+    return config
+  }
 }
 
 export default nextConfig

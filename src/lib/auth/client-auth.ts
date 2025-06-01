@@ -1,18 +1,14 @@
 'use client'
 
-import { login as serverLogin } from '@/app/api/auth/login/route'
-
-export async function login(email: string, password: string) {
-  const response = await fetch('/api/auth/login', {
+export const login = async (email: string, password: string) => {
+  const res = await fetch('/api/auth/login', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
   })
-  return response.ok
+  return res.ok
 }
 
-export async function logout() {
+export const logout = async () => {
   await fetch('/api/auth/logout', { method: 'POST' })
 }

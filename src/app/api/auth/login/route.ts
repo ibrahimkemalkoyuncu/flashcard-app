@@ -1,24 +1,28 @@
+import { createSession } from '@/lib/auth/server-auth'
 import { NextResponse } from 'next/server'
-import { login } from '@/lib/auth/jwt'
+import bcrypt from 'bcryptjs'
 
-export async function POST(request: Request) {
-  const { email, password } = await request.json()
-
+export async function POST(req: Request) {
   try {
-    const success = await login(email, password)
+    const { email, password } = await req.json()
     
-    if (!success) {
+    // Gerçek projede veritabanından kontrol edin
+    const validEmail = email === process.env.ADMIN_EMAIL
+    const validPass = await bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH!)
+    
+    if (!validEmail || !validPass) {
       return NextResponse.json(
-        { error: 'Geçersiz email veya şifre' },
+        { error: 'Geçersiz kimlik bilgileri' },
         { status: 401 }
       )
     }
 
+    await createSession({ email })
     return NextResponse.json({ success: true })
+    
   } catch (error) {
-    console.error('Login error:', error)
     return NextResponse.json(
-      { error: 'Giriş sırasında bir hata oluştu' },
+      { error: 'Sunucu hatası' },
       { status: 500 }
     )
   }

@@ -151,4 +151,4 @@ export const PUT = withAuth(async (request: NextRequest, { params }: { params: {
       if (!body.english || typeof body.english !== 'string' || body.english.trim().length === 0) {
         errors.english = 'İngilizce kelime gereklidir';
       } else if (body.english.length > 255) {
-        errors.english = '
+        errors.english = 'Bu bir hata mesajı devam ediyor...'

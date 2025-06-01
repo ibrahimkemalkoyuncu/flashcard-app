@@ -1,17 +1,22 @@
+import { ReactNode } from 'react'
+import AdminNavbar from '@/components/admin/AdminNavbar'
 import { getSession } from '@/lib/auth/server-auth'
 import { redirect } from 'next/navigation'
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode
+export default async function AdminLayout({ 
+  children 
+}: { 
+  children: ReactNode 
 }) {
   const session = await getSession()
-  if (!session) redirect('/login')
+  if (!session) redirect('/auth/login')
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="p-4 md:p-8">{children}</main>
-    </div>
+    <>
+      <AdminNavbar />
+      <main className="container mx-auto p-4">
+        {children}
+      </main>
+    </>
   )
 }

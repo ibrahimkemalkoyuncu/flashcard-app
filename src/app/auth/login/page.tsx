@@ -13,8 +13,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      // Basit auth kontrolü - gerçek projede veritabanı kontrolü yapın
-      if (email === 'admin@example.com' && password === 'admin123') {
+      if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
         await createSession({ email })
         router.push('/admin')
       } else {
@@ -30,26 +29,22 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit} className="p-8 border rounded-lg">
         <h1 className="text-2xl mb-6">Admin Login</h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
-        <div className="mb-4">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          className="w-full p-2 border rounded mb-4"
+          required
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          className="w-full p-2 border rounded mb-6"
+          required
+        />
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"

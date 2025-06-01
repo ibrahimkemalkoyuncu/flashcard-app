@@ -1,34 +1,32 @@
+import { jwtVerify, SignJWT } from 'jose'
 import { cookies } from 'next/headers'
-import { SignJWT, jwtVerify } from 'jose'
+import { redirect } from 'next/navigation'
 
-const secret = process.env.JWT_SECRET
-if (!secret) throw new Error('JWT_SECRET is not set')
-
-const key = new TextEncoder().encode(secret)
+const secretKey = process.env.JWT_SECRET
+if (!secretKey) throw new Error('JWT_SECRET is not set')
+const encodedKey = new TextEncoder().encode(secretKey)
 
 export async function encrypt(payload: any) {
-  return await new SignJWT(payload)
+  return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(key)
+    .sign(encodedKey)
 }
 
 export async function decrypt(input: string) {
-  const { payload } = await jwtVerify(input, key, {
+  const { payload } = await jwtVerify(input, encodedKey, {
     algorithms: ['HS256'],
   })
   return payload
 }
 
-export async function createSession(user: any) {
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  const session = await encrypt({ user, expires })
-
+export async function createSession(data: any) {
+  const session = await encrypt(data)
   cookies().set('session', session, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    expires,
+    maxAge: 60 * 60 * 24 * 7, // 1 hafta
     sameSite: 'lax',
     path: '/',
   })

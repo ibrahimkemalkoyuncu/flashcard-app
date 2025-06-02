@@ -80,3 +80,10 @@ body {
   font-size: 12px;
   font-weight: 600;
 }
+
+/* Temel stiller */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

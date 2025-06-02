@@ -1,8 +1,6 @@
 import NextAuth from 'next-auth'
-import { authConfig } from './auth.config'
+import { authOptions } from '@/lib/auth'
 
-export default NextAuth(authConfig).auth
+const handler = NextAuth(authOptions)
 
-export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
-}
+export { handler as GET, handler as POST }

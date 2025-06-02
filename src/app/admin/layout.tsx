@@ -1,19 +1,21 @@
-import { getSession } from '@/lib/auth/server-auth'
+import { ReactNode } from 'react'
+import { getServerSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 
 export default async function AdminLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
-  const session = await getSession()
-  if (!session) redirect('/login')
+  const session = await getServerSession()
+  
+  if (!session) {
+    redirect('/login')
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="p-4 md:p-8">
-        {children}
-      </main>
+    <div className="min-h-screen">
+      {children}
     </div>
   )
 }

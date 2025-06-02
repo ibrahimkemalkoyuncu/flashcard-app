@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 
 export async function getSession() {
-  const cookieStore = cookies() // Önce cookieStore oluşturulur
-  const session = cookieStore.get('session')?.value // Sonra değer alınır
+  const cookieStore = cookies() // Await kullanmadan önce
+  const session = cookieStore.get('session')?.value
   return session ? await decrypt(session) : null
 }
